@@ -2,22 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 
-router.post('/', async (req, res) => {
+const { createUser, getUsers, getUser } = require('../controllers/userController');
 
-  const user =  new User ({
-    userName: req.body.userName,
-    email: req.body.email,
-    password: req.body.password
-  });
-  try {
-    await user.save();
-  } catch (error) {
-    console.log(error);
-  }
-});
+router.post('/register', createUser);
 
-router.get('/', async (req, res) => {
-  res.send('Hello World!');
-});
+router.get('/users', getUsers);
+
+router.get('/users/:id', getUser);
 
 module.exports = router;
