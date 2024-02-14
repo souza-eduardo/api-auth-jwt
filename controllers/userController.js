@@ -1,5 +1,6 @@
 const bcryptjs = require('bcryptjs');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 const createUser = (async (req, res) => {
 
@@ -24,25 +25,8 @@ const createUser = (async (req, res) => {
   }
 });
 
-const getUsers = (async (req, res) => {
-  const { authorization } = req.headers;
-  console.log(authorization);
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(404).json(error);
-  }
-});
-
 const getUser = (async (req, res) => {
-  try {
-
-    const user = await User.findById(req.params.id);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(404).json(error);
-  }
+  return res.json(req.user);
 });
 
 const updateUser = (async (req, res) => {
@@ -51,7 +35,7 @@ const updateUser = (async (req, res) => {
   const options = { new: true };
   try {
     const updatedUser = await User.findByIdAndUpdate(id, updatedData, options);
-    res.status(200).send(updatedUser);
+    res.status(200).send({id: updatedUser._id, userName: updatedUser.userName, email: updatedUser.email});
   } catch (error) {
     res.status(400).json(updatedUser);
   }
@@ -68,7 +52,6 @@ const deleteUser = (async (req, res) => {
 
 module.exports = {
   createUser,
-  getUsers,
   getUser,
   updateUser,
   deleteUser
