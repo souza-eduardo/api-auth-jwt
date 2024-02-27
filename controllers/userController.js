@@ -2,9 +2,15 @@ const bcryptjs = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
+function validEmail(email) {
+  return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi.test(email);
+}
+
 const createUser = (async (req, res) => {
 
   const { userName, email, password } = req.body;
+
+  if(!validEmail(email)) return res.status(400).json({message: 'Invalid E-mail!'});
 
   const userExists = await User.findOne({ email });
   if (userExists) return res.status(400).json({ message: 'E-mail already exists' });
